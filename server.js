@@ -16,6 +16,27 @@ app.use(express.json({
 // Routes
 // CRUD
 
+// creating GET req endpoint
+app.get('/blogs', (req,res) => {
+    // knex
+    // .select()
+    // .from('todos')
+    // .then(function (todos) {
+    //     res.send(todos)
+    // })
+    res.send('work')
+})
+
+app.get('/', (req,res) => {
+    // knex
+    // .select()
+    // .from('todos')
+    // .then(function (todos) {
+    //     res.send(todos)
+    // })
+    res.send('explore')
+})
+
 
 app.listen(port, () => {
     console.log(`Listening on port: ${port}`)
