@@ -1,0 +1,1 @@
+CREATE DATABASE blogger_server;
