@@ -5,6 +5,9 @@ const app = express();
 const port = process.env.PORT || 3000
 // body parser
 const bodyParser = require('body-parser');
+// routes
+const blogs = require('./routes/blogs')
+const users = require('./routes/users')
 
 
 // Init middleware
@@ -15,27 +18,9 @@ app.use(express.json({
 
 // Routes
 // CRUD
+app.use('/blogs', blogs)
+app.use('/users', users)
 
-// creating GET req endpoint
-app.get('/blogs', (req,res) => {
-    // knex
-    // .select()
-    // .from('todos')
-    // .then(function (todos) {
-    //     res.send(todos)
-    // })
-    res.send('work')
-})
-
-app.get('/', (req,res) => {
-    // knex
-    // .select()
-    // .from('todos')
-    // .then(function (todos) {
-    //     res.send(todos)
-    // })
-    res.send('explore')
-})
 
 
 app.listen(port, () => {
