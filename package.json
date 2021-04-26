@@ -1,8 +1,8 @@
 {
   "name": "bloggerproject",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Used knex migrations and seeds for the models and schemas",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "config": "^3.3.6",
     "express": "^4.17.1",
     "express-validator": "^6.10.0",
@@ -19,5 +20,15 @@
     "knex": "^0.95.4",
     "nodemon": "^2.0.7",
     "pg": "^8.6.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChadH28/BloggerProject.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/ChadH28/BloggerProject/issues"
+  },
+  "homepage": "https://github.com/ChadH28/BloggerProject#readme"
 }

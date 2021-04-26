@@ -7,3 +7,13 @@ CREATE TABLE blog (
     datestamp DATE,
     timestamp time,
 );
+
+-- blog_id
+-- blog_title
+-- blog_content
+-- blog_picture
+-- blog_topic
+-- dateCreated or timePosted
+
+-- comments section
+-- upvotes section
