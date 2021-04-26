@@ -1,5 +1,5 @@
 // use knex.schema.createTable to create all your fields within the db
-
+    // run knex migrate:rollback and migrate:latest to update your latest migrated changes
 
 exports.up = function (knex) {
     return knex.schema
