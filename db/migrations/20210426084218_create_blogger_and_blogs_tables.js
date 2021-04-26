@@ -1,3 +1,6 @@
+// use knex.schema.createTable to create all your fields within the db
+
+
 exports.up = function (knex) {
     return knex.schema
         .createTable('users', function (table) {
