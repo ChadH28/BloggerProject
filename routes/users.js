@@ -16,4 +16,18 @@ router.get('/:id', (req,res) => {
     res.send('user')
 })
 
+
+// @req POST
+// @access public
+// @desc add new user
+router.post('/', (req,res) => {
+    // knex
+    // .select()
+    // .from('todos')
+    // .then(function (todos) {
+    //     res.send(todos)
+    // })
+    res.send('added new user')
+})
+
 module.exports = router;
