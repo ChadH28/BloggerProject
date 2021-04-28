@@ -68,15 +68,17 @@ router.put('/:id', (req,res) => {
     const { 
         field, 
         value, 
-        title, 
-        completed 
+        title,
+        content,
+        topic, 
     } = req.body;
     const {id} = req.params;
     knex('blogs')
     .where('id', id)
     .update({
-        title: title,
-        completed: completed
+        blog_title: title,
+        blog_content: content,
+        blog_topic: topic,
     })
     .then(function () {
         knex
@@ -93,13 +95,18 @@ router.put('/:id', (req,res) => {
 // @access Private and public
 // @desc delete blog
 router.delete('/:id', (req,res) => {
-    // knex
-    // .select()
-    // .from('todos')
-    // .then(function (todos) {
-    //     res.send(todos)
-    // })
-    res.send('deleted')
+    const {id} = req.params;
+    knex('blogs')
+    .where('id', id)
+    .del()
+    .then(function () {
+        knex
+        .select()
+        .from('blogs')
+        .then(function (blogs) {
+            res.send(blogs)
+        })
+    })
 })
 
 module.exports = router;
