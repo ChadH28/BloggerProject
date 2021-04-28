@@ -1,13 +1,15 @@
 // use knex.schema.createTable to create all your fields within the db
-    // run knex migrate:rollback and migrate:latest to update your latest migrated changes
+    // run knex migrate:rollback and
+    //  migrate:latest to update your latest migrated changes
 
 exports.up = function (knex) {
     return knex.schema
         .createTable('users', function (table) {
             table.increments();
             table.string('username').notNullable();
-            table.string('email').notNullable();
+            table.string('email').notNullable().unique();
             table.string('password').notNullable();
+            table.string('role').notNullable().defaultTo('reader') // Reader | blogger | user
             table.timestamp('date_started').defaultTo(knex.fn.now())
             table.timestamp('date_ended').defaultTo(knex.fn.now())
         })
