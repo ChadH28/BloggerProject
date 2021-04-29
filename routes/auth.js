@@ -21,11 +21,8 @@ router.get('/', auth_middleware, async (req, res) => {
         .from('users')
         .where(
             'id', req.user.id
-        )
-        //.select('-password')
-        // .then(function (user) {
-        //     res.json(user)
-        // })
+        ).then((user) => { return user[0] })
+        delete user.password;
         res.json(user)
     } catch (error) {
         console.error(error.message);
