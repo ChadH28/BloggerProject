@@ -76,7 +76,7 @@ router.post('/',
                 .select()
                 .from('users')
                 .where({
-                    email: 'email'
+                    'email': email // first string val in table then object 
                 })
                 .then((users) => {
                     users[0]

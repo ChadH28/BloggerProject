@@ -44,18 +44,16 @@ router.post('/', [
         email,
         password
     } = req.body;
-    console.log(email,password)
 
     try {
         let user = await knex
         .select()
         .from('users')
         .where({
-            email: 'email'
+            'email': email
         })
         .then((users) => {
-            users[0]
-            console.log(users[0])
+            return users[0]
         })
 
         if (!user) {
