@@ -9,6 +9,7 @@ const {
 } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const config = require('config')
 
 
 // @req GET http://localhost:3000/users
@@ -56,11 +57,20 @@ router.post('/',
             min: 5
         })
     ], async (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array()
+            })
+        } // change made
+
         const {
             username,
             email,
             password
         } = req.body
+
         try {
             let exists = await knex
                 .select()
@@ -86,30 +96,31 @@ router.post('/',
                 user.password = await bcrypt.hash(password, salt)
                 knex('users')
                     .insert(user)
+                    //console.log(user)
                     .then(function () {
-                        knex
-                            .select()
-                            .from('users')
-                            .then(function (users) {
-                                res.send(users)
-                            })
-                    })
-                
-                const payload = {
-                    user: {
-                        id: user.id
-                    }
-                }
-                jwt.sign(payload)
+                        const payload = {
+                            user: {
+                                id: user.id,
+                                email: user.email
+                            }
+                        }
 
+                        jwt.sign(
+                            payload,
+                            config.get('jwtSecret'), {
+                                expiresIn: 360000
+                            },
+                            (error, token) => {
+                                if (error) throw error;
+                                res.json({
+                                    token
+                                })
+                            }
+                        )
+
+                    })
             }
         } catch (error) {
-            // const errors = validationResult(req);
-            // if (!errors.isEmpty()) {
-            //     return res.status(400).json({
-            //         errors: errors.array()
-            //     })
-            // }
             console.error(error.message)
             res.status(500).send('Server error')
         }
