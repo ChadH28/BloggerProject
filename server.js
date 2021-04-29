@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 // routes
 const blogs = require('./routes/blogs')
 const users = require('./routes/users')
+const auth = require('./routes/auth')
 const userBlogs = require('./routes/userblogs')
 
 
@@ -21,6 +22,7 @@ app.use(express.json({
 // CRUD
 app.use('/blogs', blogs)
 app.use('/users', users)
+app.use('/auth', auth)
 app.use('/blogs-of-user', userBlogs)
 
 
