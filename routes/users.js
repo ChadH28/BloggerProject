@@ -8,6 +8,7 @@ const {
     validationResult
 } = require('express-validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 
 // @req GET http://localhost:3000/users
@@ -93,6 +94,13 @@ router.post('/',
                                 res.send(users)
                             })
                     })
+                
+                const payload = {
+                    user: {
+                        id: user.id
+                    }
+                }
+                jwt.sign(payload)
 
             }
         } catch (error) {
