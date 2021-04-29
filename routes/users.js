@@ -13,7 +13,7 @@ const config = require('config')
 
 
 // @req GET http://localhost:3000/users
-// @access public
+// @access PRIVATE
 // @desc get users
 router.get('/', (req, res) => {
     knex
@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
 })
 
 // @req GET http://localhost:3000/users/:id
-// @access public
+// @access PRIVATE
 // @desc get a user
 router.get('/:id', (req, res) => {
     const {
@@ -39,6 +39,8 @@ router.get('/:id', (req, res) => {
             res.send(user)
         })
 })
+
+
 
 
 // @req POST http://localhost:3000/users
@@ -126,5 +128,64 @@ router.post('/',
             res.status(500).send('Server error')
         }
     })
+
+// @req PUT http://localhost:3000/users/:id
+// @access PRIVATE
+// @desc edit user
+router.put('/:id',
+    [
+        check('username', 'username is required')
+        .not()
+        .isEmpty(),
+        check('email', 'email is required')
+        .isEmail()
+        .normalizeEmail(),
+        check('password', 'password has to more than 5 characters')
+        .isLength({
+            min: 5
+        })
+    ],
+    (req, res) => {
+        const {
+            username,
+            email,
+            password,
+            role
+        } = req.body;
+        const {
+            id
+        } = req.params;
+        knex
+            .select()
+            .from('users')
+            .where('id', id)
+            .update({
+                username: username,
+                email: email,
+                password: password,
+                role: role
+            })
+            .then(function (user) {
+                res.send(user)
+            })
+    })
+
+// @req DELETE
+// @access PRIVATE
+// @desc delete user
+router.delete('/:id', (req,res) => {
+    const {id} = req.params;
+    knex('users')
+    .where('id', id)
+    .del()
+    .then(function () {
+        knex
+        .select()
+        .from('users')
+        .then(function (users) {
+            res.send(users)
+        })
+    })
+})
 
 module.exports = router;
