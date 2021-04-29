@@ -11,14 +11,21 @@ const knex = require('../db/knex')
 const auth_middleware = require('../middleware/jwt')
 
 
-// @route GET api/auth
+// @route GET http://localhost:3000/auth
 // @desc get LOGGED  user
 // @access Private
 router.get('/', auth_middleware, async (req, res) => {
-    // res.send('Getting a logged in user')
-
     try {
-        let user = await User.findById(req.user.id).select('-password')
+        let user = await knex
+        .select()
+        .from('users')
+        .where(
+            'id', req.user.id
+        )
+        //.select('-password')
+        // .then(function (user) {
+        //     res.json(user)
+        // })
         res.json(user)
     } catch (error) {
         console.error(error.message);
@@ -26,8 +33,8 @@ router.get('/', auth_middleware, async (req, res) => {
     }
 })
 
-// @route POST api/auth
-// @desc Auth user and get token 
+// @route POST http://localhost:3000/auth
+// @desc Auth user and get token LOGIN
 // @access Public
 router.post('/', [
     check('email', 'Please include a valid email')
@@ -89,7 +96,6 @@ router.post('/', [
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error')
-        
     }
 })
 
