@@ -1,6 +1,10 @@
 const express = require('express');
+const cors = require('cors')
+
 // application object using express 
 const app = express();
+app.use(cors())
+
 // PORT 
 const port = process.env.PORT || 3000
 // body parser
