@@ -40,6 +40,18 @@ router.get('/:id', (req, res) => {
         })
 })
 
+router.get('/:id/image', (req, res) => {
+    const {
+        id
+    } = req.params;
+    knex
+        .select('image')
+        .from('users')
+        .then(function (user) {
+            res.send(user[0].image)
+        })
+})
+
 
 
 
@@ -93,7 +105,8 @@ router.post('/',
                     username,
                     email,
                     password,
-                    role: 'user'
+                    role: 'user',
+                    image: ''
                 }
                 const salt = await bcrypt.genSalt(10)
                 user.password = await bcrypt.hash(password, salt)
@@ -122,6 +135,20 @@ router.post('/',
                         )
 
                     })
+                res.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                </head>
+                <body>
+                    <img src="${user.image}">
+                </body>
+                </html>
+                `)
+                res.send()
             }
         } catch (error) {
             console.error(error.message)

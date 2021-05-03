@@ -9,7 +9,8 @@ exports.up = function (knex) {
             table.string('username').notNullable();
             table.string('email').notNullable().unique();
             table.string('password').notNullable();
-            table.string('role').notNullable().defaultTo('reader') // Reader | blogger | user
+            table.string('image', [99999]).notNullable();
+            table.string('role').notNullable().defaultTo('reader') // Reader | blogger | admin
             table.timestamp('date_started').defaultTo(knex.fn.now())
             table.timestamp('date_ended').defaultTo(knex.fn.now())
         })
@@ -29,7 +30,7 @@ exports.up = function (knex) {
             table.string('blog_topic').notNullable();
             table.timestamp('date_blogCreated').defaultTo(knex.fn.now());
             table.timestamp('date_blogEdited').defaultTo(knex.fn.now());
-            table.boolean('user').notNullable().defaultTo(false) // reader | user
+            // table.boolean('user').notNullable().defaultTo(false) // reader | user
             table.integer('user_id').references('id').inTable('users');
         })
         // -- blog_id
@@ -41,7 +42,26 @@ exports.up = function (knex) {
 
         // -- comments section
         // -- upvotes section
+        .createTable('comments', function (table) {
+            table.increments();
+            table.string('comment_content').notNullable();
+            table.timestamp('date_commentCreated').defaultTo(knex.fn.now());
+            table.timestamp('date_commentEdited').defaultTo(knex.fn.now());
+            table.integer('user_id').references('id').inTable('users'); // user of comment
+            table.integer('blog_id').references('id').inTable('blogs');
+        })
+        // -- comment_id
+        // -- comment_content
+        // -- dateCreated or timePosted
+
+        // -- blogger comment relationship
+        // -- comment to blog relationship
 };
+
+// <!-- ~~~~~~~~ -->
+// <!--  Footer  -->
+// <!-- ~~~~~~~~ -->
+
 
 
 
@@ -49,4 +69,5 @@ exports.down = function (knex) {
     return knex.schema
         .dropTable('blogs')
         .dropTable('users')
+        .dropTable('comments')
 };

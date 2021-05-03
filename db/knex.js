@@ -14,6 +14,5 @@ module.exports = require('knex')(config);
     // npm i
         // express node pg knex body-parser, ensure your work is on a desktop hard-disk and not a flash
         // npm i knex -g, install knex globally as well
-        // npm i nodemon -d
 
     // Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  ##run this if getting a script running error
