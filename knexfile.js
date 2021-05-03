@@ -35,3 +35,10 @@ module.exports = {
       },
     },
   };
+
+  // add postgres plugin to heroku project
+    // heroku addons: create heroku-posgresql: hobby-dev
+    // heroku config: set PGSSLMODE = no-verify
+    // heroku run knex migrate: rollback
+    // heroku run knex migrate: latest
+    // heroku run knex seed: run

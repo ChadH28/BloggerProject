@@ -40,20 +40,6 @@ router.get('/:id', (req, res) => {
         })
 })
 
-router.get('/:id/image', (req, res) => {
-    const {
-        id
-    } = req.params;
-    knex
-        .select('image')
-        .from('users')
-        .then(function (user) {
-            res.send(user[0].image)
-        })
-})
-
-
-
 
 // @req POST http://localhost:3000/users
 // @access public

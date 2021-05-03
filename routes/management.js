@@ -9,12 +9,13 @@ const {
 } = require('express-validator')
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const auth_middleware = require('../middleware/jwt')
 
 
 // @req GET http://localhost:3000/users
 // @access PRIVATE
 // @desc ADMIN get users
-router.get('/', (req, res) => {
+router.get('/users', (req, res) => {
     knex
         .select()
         .from('users')
@@ -26,7 +27,7 @@ router.get('/', (req, res) => {
 // @req GET http://localhost:3000/users/:id
 // @access PRIVATE
 // @desc ADMIN get a user
-router.get('/:id', (req, res) => {
+router.get('/users/:id', (req, res) => {
     const {
         id
     } = req.params;
@@ -39,23 +40,11 @@ router.get('/:id', (req, res) => {
         })
 })
 
-router.get('/:id/image', (req, res) => {
-    const {
-        id
-    } = req.params;
-    knex
-        .select('image')
-        .from('users')
-        .then(function (user) {
-            res.send(user[0].image)
-        })
-})
-
 
 // @req DELETE
 // @access PRIVATE
 // @desc ADMIN delete user
-router.delete('/:id', (req,res) => {
+router.delete('/users/:id', (req,res) => {
     const {id} = req.params;
     knex('users')
     .where('id', id)
@@ -160,47 +149,32 @@ router.post('/',
         }
     })
 
-// // @req PUT http://localhost:3000/users/:id
-// // @access PRIVATE
-// // @desc edit user
-// router.put('/:id',
-//     [
-//         check('username', 'username is required')
-//         .not()
-//         .isEmpty(),
-//         check('email', 'email is required')
-//         .isEmail()
-//         .normalizeEmail(),
-//         check('password', 'password has to more than 5 characters')
-//         .isLength({
-//             min: 5
-//         })
-//     ],
-//     (req, res) => {
-//         const {
-//             username,
-//             email,
-//             password,
-//             role
-//         } = req.body;
-//         const {
-//             id
-//         } = req.params;
-//         knex
-//             .select()
-//             .from('users')
-//             .where('id', id)
-//             .update({
-//                 username: username,
-//                 email: email,
-//                 password: password,
-//                 role: role
-//             })
-//             .then(function (user) {
-//                 res.send(user)
-//             })
-//     })
 
-
-
-
+// @route GET http://localhost:3000/auth
+// @desc get LOGGED ADMIN user
+// @access Private
+router.get('/', auth_middleware, async (req, res) => {
+    try {
+        let user = await knex
+        .select()
+        .from('users')
+        // .where(
+        //     'id', req.user.id
+        // )
+        .then((user) => { return user[0] })
+        if (user.role === 'admin') {
+            let users = await knex
+            .select()
+            .from('users')
+            res.send(users)
+        } else {
+            console.error(error.message)
+            res.status(401).send('Access to admin rejected')         
+        }
+        delete user.password;
+        res.json(user)
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error')
+    }
+})
