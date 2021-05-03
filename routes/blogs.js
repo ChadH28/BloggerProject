@@ -46,8 +46,7 @@ router.post('/', (req,res) => {
         blog_title: title,
         blog_content: content,
         blog_topic: topic,
-        user_id: user_id,
-        user: true
+        user_id: user_id
     })
     .then(function () {
         knex
@@ -78,7 +77,8 @@ router.put('/:id', (req,res) => {
     .update({
         blog_title: title,
         blog_content: content,
-        blog_topic: topic,
+        blog_topic: topic
+        //date_blogEdited
     })
     .then(function () {
         knex

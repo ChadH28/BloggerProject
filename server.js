@@ -14,6 +14,7 @@ const blogs = require('./routes/blogs')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
 const userBlogs = require('./routes/userblogs')
+const comments = require('./routes/comments')
 
 
 // Init middleware
@@ -28,6 +29,7 @@ app.use('/blogs', blogs)
 app.use('/users', users)
 app.use('/auth', auth)
 app.use('/blogs-of-user', userBlogs)
+app.use('/comments', comments)
 
 
 

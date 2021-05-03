@@ -3,6 +3,12 @@ const knex = require('../db/knex')
 
 const router = Router();
 
+        // -- comment_id
+        // -- comment_content
+        // -- dateCreated or timePosted
+
+        // -- blogger comment relationship
+        // -- comment to blog relationship
 
 // @req GET
 // @access Private and public
@@ -36,18 +42,15 @@ router.get('/:id', (req,res) => {
 // @desc add/create a new comment
 router.post('/', (req,res) => {
     const { 
-        title,
         content,
-        topic, 
         user_id,
+        blog_id
     } = req.body;
     knex('comments')
     .insert({
-        comment_title: title,
         comment_content: content,
-        comment_topic: topic,
         user_id: user_id,
-        user: true
+        blog_id: blog_id,
     })
     .then(function () {
         knex
@@ -68,17 +71,13 @@ router.put('/:id', (req,res) => {
     const { 
         field, 
         value, 
-        title,
-        content,
-        topic, 
+        content
     } = req.body;
     const {id} = req.params;
     knex('comments')
     .where('id', id)
     .update({
-        comment_title: title,
-        comment_content: content,
-        comment_topic: topic,
+        comment_content: content
     })
     .then(function () {
         knex
