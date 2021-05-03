@@ -58,12 +58,6 @@ exports.up = function (knex) {
         // -- comment to blog relationship
 };
 
-// <!-- ~~~~~~~~ -->
-// <!--  Footer  -->
-// <!-- ~~~~~~~~ -->
-
-
-
 
 exports.down = function (knex) {
     return knex.schema

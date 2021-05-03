@@ -15,7 +15,7 @@ const users = require('./routes/users')
 const auth = require('./routes/auth')
 const userBlogs = require('./routes/userblogs')
 const comments = require('./routes/comments')
-
+const userComments = require('./routes/usercomments')
 
 // Init middleware
 app.use(bodyParser.json());
@@ -30,6 +30,7 @@ app.use('/users', users)
 app.use('/auth', auth)
 app.use('/blogs-of-user', userBlogs)
 app.use('/comments', comments)
+app.use('/user-comments', userComments)
 
 
 
@@ -38,3 +39,12 @@ app.listen(port, () => {
 });
 
 module.exports = app;
+
+
+// how to time stamp when making an update
+// how to differentiate users and admin
+// how to make the users comment to users blogs relationship or join
+// how to upload image from front and store it in th back
+// how to make an upvote component with click is upvote declick is no vote
+// roles
+// admin section
