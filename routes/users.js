@@ -13,7 +13,7 @@ const config = require('config')
 
 
 // @req GET http://localhost:3000/users
-// @access PRIVATE
+// @access PRIVATE and PUBLIC
 // @desc get users
 router.get('/', (req, res) => {
     knex
@@ -23,6 +23,8 @@ router.get('/', (req, res) => {
             res.send(users)
         })
 })
+
+
 
 // @req GET http://localhost:3000/users/:id
 // @access PRIVATE
@@ -57,7 +59,6 @@ router.post('/',
             min: 5
         })
     ], async (req, res) => {
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -84,9 +85,6 @@ router.post('/',
                 })
 
             if (exists) {
-                // return res.status(400).json({
-                //     msg: 'User exists'
-                // })
                 res.status(400);
                 return res.send('User already exists')
             } else {
@@ -146,47 +144,82 @@ router.put('/:id',
             min: 5
         })
     ],
-    (req, res) => {
+    async (req, res) => {
         const {
             username,
             email,
-            password,
-            role
+            password
         } = req.body;
         const {
             id
         } = req.params;
-        knex
-            .select()
-            .from('users')
-            .where('id', id)
-            .update({
-                username: username,
-                email: email,
-                password: password,
-                role: role
-            })
-            .then(function (user) {
-                res.send(user)
-            })
+        try {
+            let user = await knex
+                .select()
+                .from('users')
+                .then((user) => {
+                    return user[0]
+                })
+            if (user.role === 'user') {
+                knex('users')
+                    .where('id', id)
+                    .update({
+                        username: username,
+                        email: email,
+                        password: await bcrypt.hash(password, salt)
+                    })
+                    .then(function () {
+                        knex
+                            .select()
+                            .from('users')
+                            .then(function (users) {
+                                res.send(users)
+                            })
+                    })
+            } else {
+                res.status(401);
+                return res.send('You dont have authorization to edit')
+            }
+        } catch (error) {
+            console.error(error.message)
+            res.status(500).send('Server error')
+        }
     })
 
 // @req DELETE
 // @access PRIVATE
 // @desc delete user
-router.delete('/:id', (req,res) => {
-    const {id} = req.params;
-    knex('users')
-    .where('id', id)
-    .del()
-    .then(function () {
-        knex
-        .select()
-        .from('users')
-        .then(function (users) {
-            res.send(users)
-        })
-    })
+router.delete('/:id', async (req, res) => {
+    const {
+        id
+    } = req.params;
+    try {
+        let user = await knex
+            .select()
+            .from('users')
+            .then((user) => {
+                return user[0]
+            })
+        if (user.role === 'user') {
+            knex('users')
+                .where('id', id)
+                .del()
+                .then(function () {
+                    knex
+                        .select()
+                        .from('users')
+                        .then(function (users) {
+                            res.send(users)
+                        })
+                })
+        } else {
+            res.status(401);
+            return res.send('You dont have authorization to delete')
+        }
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server error')
+    }
 })
 
 module.exports = router;
