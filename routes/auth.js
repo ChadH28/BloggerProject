@@ -70,7 +70,7 @@ router.post('/', [
 
         if (!isMatch) {
             return res.status(400).json({
-                msg: 'Invalid password credentials'
+                msg: 'Your password characters dont match'
             })
         }
 

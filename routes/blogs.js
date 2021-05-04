@@ -196,7 +196,7 @@ router.delete('/:id', async (req, res) => {
                 })
         } else {
             res.status(401);
-            return res.send('You dont have authorization to update')
+            return res.send('You dont have authorization to delete')
         }
     } catch (error) {
         console.error(error.message);
