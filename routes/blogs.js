@@ -1,8 +1,11 @@
 const {
     Router
 } = require('express');
+const {
+    check,
+    validationResult
+} = require('express-validator')
 const knex = require('../db/knex')
-
 const router = Router();
 
 
@@ -47,98 +50,154 @@ router.get('/:id', (req, res) => {
 })
 
 
-// @req POST
-// @access Private and public
-// @desc add/create a new blog
-router.post('/', (req, res) => {
-    const {
-        title,
-        content,
-        topic,
-        user_id,
-    } = req.body;
-    try {
-        knex('blogs')
-            .insert({
-                blog_title: title,
-                blog_content: content,
-                blog_topic: topic,
-                user_id: user_id
-            })
-            .then(function () {
-                knex
-                    .select()
-                    .from('blogs')
-                    .then(function (blogs) {
-                        res.send(blogs)
-                    })
-            })
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error in creating blog.');
-    }
 
-})
+// @req POST
+// @access Private
+// @desc add/create a new blog
+router.post('/',
+    [
+        check('title', 'title is required')
+        .not()
+        .isEmpty(),
+        check('content', 'content is required')
+        .not()
+        .isEmpty(),
+        check('topic', 'please select a topic')
+        .not()
+        .isEmpty()
+    ],
+    async (req, res) => {
+        const {
+            title,
+            content,
+            topic,
+            user_id
+        } = req.body;
+        try {
+            let user = await knex
+                .select()
+                .from('users')
+                .then((user) => {
+                    return user[0]
+                })
+            if (user.role === 'user') {
+                knex('blogs')
+                    .insert({
+                        blog_title: title,
+                        blog_content: content,
+                        blog_topic: topic,
+                        user_id: user_id
+                    })
+                    .then(function () {
+                        knex
+                            .select()
+                            .from('blogs')
+                            .then(function (blogs) {
+                                res.send(blogs)
+                            })
+                    })
+            } else {
+                res.status(401);
+                return res.send('You dont have authorization to delete')
+            }
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send('Server Error in creating blog.');
+        }
+
+    })
 
 
 // @req PUT
 // @access Private and public
 // @desc edit and update blog
-router.put('/:id', (req, res) => {
-    const {
-        field,
-        value,
-        title,
-        content,
-        topic,
-    } = req.body;
-    const {
-        id
-    } = req.params;
-    try {
-        knex('blogs')
-            .where('id', id)
-            .update({
-                blog_title: title,
-                blog_content: content,
-                blog_topic: topic
-                //date_blogEdited
-            })
-            .then(function () {
-                knex
-                    .select()
-                    .from('blogs')
-                    .then(function (blogs) {
-                        res.send(blogs)
+router.put('/:id',
+    [
+        check('title', 'title is required to update')
+        .not()
+        .isEmpty(),
+        check('content', 'content is required to update')
+        .not()
+        .isEmpty(),
+        check('topic', 'please select a topic to update')
+        .not()
+        .isEmpty()
+    ],
+    async (req, res) => {
+        const {
+            title,
+            content,
+            topic
+        } = req.body;
+        const {
+            id
+        } = req.params;
+        try {
+            let user = await knex
+                .select()
+                .from('users')
+                .then((user) => {
+                    return user[0]
+                })
+            if (user.role === 'user') {
+                knex('blogs')
+                    .where('id', id)
+                    .update({
+                        blog_title: title,
+                        blog_content: content,
+                        blog_topic: topic
+                        //date_blogEdited
                     })
-            })
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error in updating blog.');
-    }
+                    .then(function () {
+                        knex
+                            .select()
+                            .from('blogs')
+                            .then(function (blogs) {
+                                res.send(blogs)
+                            })
+                    })
+            } else {
+                res.status(401);
+                return res.send('You dont have authorization to update')
+            }
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send('Server Error in updating blog.');
+        }
 
-})
+    })
 
 
 // @req DELETE
 // @access Private and public
 // @desc delete blog
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     const {
         id
     } = req.params;
     try {
-        knex('blogs')
-            .where('id', id)
-            .del()
-            .then(function () {
-                knex
-                    .select()
-                    .from('blogs')
-                    .then(function (blogs) {
-                        res.send(blogs)
-                    })
+        let user = await knex
+            .select()
+            .from('users')
+            .then((user) => {
+                return user[0]
             })
+        if (user.role === 'user') {
+            knex('blogs')
+                .where('id', id)
+                .del()
+                .then(function () {
+                    knex
+                        .select()
+                        .from('blogs')
+                        .then(function (blogs) {
+                            res.send(blogs)
+                        })
+                })
+        } else {
+            res.status(401);
+            return res.send('You dont have authorization to update')
+        }
     } catch (error) {
         console.error(error.message);
         res.send('Error in deleting blog.')
@@ -146,5 +205,3 @@ router.delete('/:id', (req, res) => {
 })
 
 module.exports = router;
-
-
