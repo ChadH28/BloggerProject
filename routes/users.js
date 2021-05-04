@@ -80,13 +80,15 @@ router.post('/',
                     'email': email // first string val in table then object 
                 })
                 .then((users) => {
-                    users[0]
+                    return users[0]
                 })
 
             if (exists) {
-                return res.status(400).json({
-                    msg: 'User exists'
-                })
+                // return res.status(400).json({
+                //     msg: 'User exists'
+                // })
+                res.status(400);
+                return res.send('User already exists')
             } else {
                 user = {
                     username,

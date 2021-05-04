@@ -8,6 +8,7 @@ const {
     validationResult
 } = require('express-validator')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 const config = require('config')
 const auth_middleware = require('../middleware/jwt')
 
@@ -15,51 +16,99 @@ const auth_middleware = require('../middleware/jwt')
 // @req GET http://localhost:3000/users
 // @access PRIVATE
 // @desc ADMIN get users
-router.get('/users', (req, res) => {
-    knex
-        .select()
-        .from('users')
-        .then(function (users) {
-            res.send(users)
-        })
+router.get('/users', async (req, res) => {
+    try {
+        let user = await knex
+            .select()
+            .from('users')
+            .then((user) => {
+                return user[0]
+            })
+        if (user.role === 'admin') {
+            knex
+            .select()
+            .from('users')
+            .then(function (users) {
+                res.send(users)
+            })
+        } else {
+            res.status(401);
+            return res.send('Access to view users rejected')
+        }
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server error')
+    }
 })
 
 // @req GET http://localhost:3000/users/:id
 // @access PRIVATE
 // @desc ADMIN get a user
-router.get('/users/:id', (req, res) => {
+router.get('/users/:id', async (req, res) => {
     const {
         id
     } = req.params;
-    knex
-        .select()
-        .from('users')
-        .where('id', id)
-        .then(function (user) {
-            res.send(user)
-        })
+    try {
+        let user = await knex
+            .select()
+            .from('users')
+            .then((user) => {
+                return user[0]
+            })
+        if (user.role === 'admin') {
+            knex
+                .select()
+                .from('users')
+                .where('id', id)
+                .then(function (user) {
+                    res.send(user)
+                })
+        } else {
+            res.status(401);
+            return res.send('Access to view user rejected')
+        }
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server error')
+    }
 })
 
 
 // @req DELETE
 // @access PRIVATE
 // @desc ADMIN delete user
-router.delete('/users/:id', (req,res) => {
-    const {id} = req.params;
-    knex('users')
-    .where('id', id)
-    .del()
-    .then(function () {
-        knex
-        .select()
-        .from('users')
-        .then(function (users) {
-            res.send(users)
-        })
-    })
+router.delete('/users/:id', async (req, res) => {
+    const {
+        id
+    } = req.params;
+    try {
+        let user = await knex
+            .select()
+            .from('users')
+            .then((user) => {
+                return user[0]
+            })
+        if (user.role === 'admin') {
+            knex('users')
+                .where('id', id)
+                .del()
+                .then(function () {
+                    knex
+                        .select()
+                        .from('users')
+                        .then(function (users) {
+                            res.send(users)
+                        })
+                })
+        } else {
+            res.status(401);
+            return res.send('You dont have authorization to delete')
+        }
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server error')
+    }
 })
-
-module.exports = router;
 
 
 // @req POST http://localhost:3000/Admin
@@ -67,10 +116,10 @@ module.exports = router;
 // @desc add new ADMIN
 router.post('/',
     [
-        check('username', 'username is required')
+        check('username', 'username for admin is required')
         .not()
         .isEmpty(),
-        check('email', 'email is required')
+        check('email', 'email for admin is required')
         .isEmail()
         .normalizeEmail(),
         check('password', 'password has to more than 5 characters')
@@ -105,9 +154,8 @@ router.post('/',
                 })
 
             if (exists) {
-                return res.status(400).json({
-                    msg: 'Admin User exists'
-                })
+                res.status(400);
+                return res.send('Admin User exists')
             } else {
                 user = {
                     username,
@@ -153,23 +201,22 @@ router.post('/',
 // @route GET http://localhost:3000/auth
 // @desc get LOGGED ADMIN user
 // @access Private
-router.get('/', auth_middleware, async (req, res) => {
+router.get('/', auth_middleware, async (req, res, error) => {
     try {
         let user = await knex
-        .select()
-        .from('users')
-        // .where(
-        //     'id', req.user.id
-        // )
-        .then((user) => { return user[0] })
-        if (user.role === 'admin') {
-            let users = await knex
             .select()
             .from('users')
+            .then((user) => {
+                return user[0]
+            })
+        if (user.role === 'admin') {
+            let users = await knex
+                .select()
+                .from('users')
             res.send(users)
         } else {
-            console.error(error.message)
-            res.status(401).send('Access to admin rejected')         
+            res.status(401);
+            return res.send('Access to admin rejected')
         }
         delete user.password;
         res.json(user)
@@ -178,3 +225,6 @@ router.get('/', auth_middleware, async (req, res) => {
         res.status(500).send('Server Error')
     }
 })
+
+
+module.exports = router;

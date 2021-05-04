@@ -16,6 +16,7 @@ const auth = require('./routes/auth')
 const userBlogs = require('./routes/userblogs')
 const comments = require('./routes/comments')
 const userComments = require('./routes/usercomments')
+const management = require('./routes/management')
 
 // Init middleware
 app.use(bodyParser.json());
@@ -24,14 +25,14 @@ app.use(express.json({
 }))
 
 // Routes
-// CRUD
-app.use('/blogs', blogs)
 app.use('/users', users)
 app.use('/auth', auth)
+// CRUD
+app.use('/blogs', blogs)
 app.use('/blogs-of-user', userBlogs)
 app.use('/comments', comments)
 app.use('/user-comments', userComments)
-
+app.use('/management', management)
 
 
 app.listen(port, () => {
