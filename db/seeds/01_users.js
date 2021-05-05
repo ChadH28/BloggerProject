@@ -8,6 +8,7 @@ exports.seed = function (knex) {
           username: 'spazzchazz',
           email: 'chazz@gmail.com',
           password: '1234'
+          
         },
         {
           id: 2,

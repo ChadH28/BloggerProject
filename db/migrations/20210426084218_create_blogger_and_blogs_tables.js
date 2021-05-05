@@ -9,7 +9,7 @@ exports.up = function (knex) {
             table.string('username').notNullable();
             table.string('email').notNullable().unique();
             table.string('password').notNullable();
-            table.string('image', [99999]).notNullable();
+            table.string('image', [99999]);
             table.string('role').notNullable().defaultTo('reader') // Reader | blogger | admin
             table.timestamp('date_started').defaultTo(knex.fn.now())
             table.timestamp('date_ended').defaultTo(knex.fn.now())
@@ -61,7 +61,7 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
     return knex.schema
-        .dropTable('blogs')
         .dropTable('users')
+        .dropTable('blogs')
         .dropTable('comments')
 };
