@@ -1,6 +1,6 @@
 // use knex.schema.createTable to create all your fields within the db
-    // run knex migrate:rollback and
-    //  migrate:latest to update your latest migrated changes
+// run knex migrate:rollback and
+//  migrate:latest to update your latest migrated changes
 
 exports.up = function (knex) {
     return knex.schema
@@ -50,18 +50,18 @@ exports.up = function (knex) {
             table.integer('user_id').references('id').inTable('users'); // user of comment
             table.integer('blog_id').references('id').inTable('blogs');
         })
-        // -- comment_id
-        // -- comment_content
-        // -- dateCreated or timePosted
+    // -- comment_id
+    // -- comment_content
+    // -- dateCreated or timePosted
 
-        // -- blogger comment relationship
-        // -- comment to blog relationship
+    // -- blogger comment relationship
+    // -- comment to blog relationship
 };
 
 
 exports.down = function (knex) {
     return knex.schema
-        .dropTable('users')
-        .dropTable('blogs')
-        .dropTable('comments')
+        .dropTableIfExists('comments')//order is important based on relationship
+        .dropTableIfExists('blogs')
+        .dropTableIfExists('users')
 };
