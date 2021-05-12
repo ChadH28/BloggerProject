@@ -41,7 +41,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-// @req GET http://localhost:3000/users/:id
+// @req get http://localhost:3000/users/:id
 // @access PRIVATE
 // @desc ADMIN get a user
 router.get('/users/:id', async (req, res) => {
@@ -74,7 +74,7 @@ router.get('/users/:id', async (req, res) => {
 })
 
 
-// @req DELETE
+// @req DELETE http://localhost:3000/management/users/:id
 // @access PRIVATE
 // @desc ADMIN delete user
 router.delete('/users/:id', async (req, res) => {
@@ -111,7 +111,7 @@ router.delete('/users/:id', async (req, res) => {
 })
 
 
-// @req POST http://localhost:3000/Admin
+// @req POST http://localhost:3000/management
 // @access public
 // @desc add new ADMIN
 router.post('/',
@@ -150,7 +150,7 @@ router.post('/',
                     'email': email // first string val in table then object 
                 })
                 .then((users) => {
-                    users[0]
+                    return users[0]
                 })
 
             if (exists) {
@@ -173,7 +173,8 @@ router.post('/',
                         const payload = {
                             user: {
                                 id: user.id,
-                                email: user.email
+                                email: user.email,
+                                role: user.role
                             }
                         }
 
@@ -198,7 +199,7 @@ router.post('/',
     })
 
 
-// @route GET http://localhost:3000/auth
+// @route GET http://localhost:3000/management
 // @desc get LOGGED ADMIN user
 // @access Private
 router.get('/', auth_middleware, async (req, res, error) => {
@@ -209,11 +210,13 @@ router.get('/', auth_middleware, async (req, res, error) => {
             .then((user) => {
                 return user[0]
             })
+            console.log(user.role)
         if (user.role === 'admin') {
             let users = await knex
                 .select()
                 .from('users')
             res.send(users)
+            console.log(users)
         } else {
             res.status(401);
             return res.send('Access to admin rejected')

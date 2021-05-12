@@ -8,7 +8,7 @@ module.exports = {
       user: 'postgres',
       host: 'localhost',
       database: 'blogger_server',
-      password: 'postgres',
+      password: '1234',
       port: 5432
     },
     migrations: {

@@ -68,9 +68,9 @@ router.post('/',
     ],
     async (req, res) => {
         const {
-            title,
-            content,
-            topic,
+            blog_title,
+            blog_content,
+            blog_topic,
             user_id
         } = req.body;
         try {
@@ -83,9 +83,9 @@ router.post('/',
             if (user.role === 'user') {
                 knex('blogs')
                     .insert({
-                        blog_title: title,
-                        blog_content: content,
-                        blog_topic: topic,
+                        blog_title: blog_title,
+                        blog_content: blog_content,
+                        blog_topic: blog_topic,
                         user_id: user_id
                     })
                     .then(function () {

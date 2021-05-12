@@ -148,11 +148,13 @@ router.put('/:id',
         const {
             username,
             email,
+            image,
             password
         } = req.body;
         const {
             id
         } = req.params;
+        const salt = await bcrypt.genSalt(10)
         try {
             let user = await knex
                 .select()
@@ -166,6 +168,7 @@ router.put('/:id',
                     .update({
                         username: username,
                         email: email,
+                        image: image,
                         password: await bcrypt.hash(password, salt)
                     })
                     .then(function () {
