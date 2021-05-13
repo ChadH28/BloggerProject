@@ -71,6 +71,7 @@ router.post('/',
             blog_title,
             blog_content,
             blog_topic,
+            blog_image,
             user_id
         } = req.body;
         try {
@@ -86,6 +87,7 @@ router.post('/',
                         blog_title: blog_title,
                         blog_content: blog_content,
                         blog_topic: blog_topic,
+                        blog_image: blog_image,
                         user_id: user_id
                     })
                     .then(function () {
@@ -98,7 +100,7 @@ router.post('/',
                     })
             } else {
                 res.status(401);
-                return res.send('You dont have authorization to delete')
+                return res.send('You dont have authorization to create')
             }
         } catch (error) {
             console.error(error.message);

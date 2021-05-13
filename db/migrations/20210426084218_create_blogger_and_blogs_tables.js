@@ -28,6 +28,7 @@ exports.up = function (knex) {
             table.string('blog_title').notNullable();
             table.string('blog_content').notNullable();
             table.string('blog_topic').notNullable();
+            table.string('blog_image', [99999]);
             table.timestamp('date_blogCreated').defaultTo(knex.fn.now());
             table.timestamp('date_blogEdited').defaultTo(knex.fn.now());
             // table.boolean('user').notNullable().defaultTo(false) // reader | user
