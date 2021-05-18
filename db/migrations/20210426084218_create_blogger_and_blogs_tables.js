@@ -9,7 +9,7 @@ exports.up = function (knex) {
             table.string('username').notNullable();
             table.string('email').notNullable().unique();
             table.string('password').notNullable();
-            table.string('image', [99999]);
+            table.string('image', [9999999]);
             table.string('role').notNullable().defaultTo('reader') // Reader | blogger | admin
             table.timestamp('date_started').defaultTo(knex.fn.now())
             table.timestamp('date_ended').defaultTo(knex.fn.now())
@@ -26,9 +26,9 @@ exports.up = function (knex) {
         .createTable('blogs', function (table) {
             table.increments();
             table.string('blog_title').notNullable();
-            table.string('blog_content').notNullable();
+            table.string('blog_content', [500]).notNullable();
             table.string('blog_topic').notNullable();
-            table.string('blog_image', [99999]);
+            table.string('blog_image', [9999999]);
             table.timestamp('date_blogCreated').defaultTo(knex.fn.now());
             table.timestamp('date_blogEdited').defaultTo(knex.fn.now());
             // table.boolean('user').notNullable().defaultTo(false) // reader | user

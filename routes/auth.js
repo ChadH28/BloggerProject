@@ -20,7 +20,7 @@ router.get('/', auth_middleware, async (req, res) => {
         .select()
         .from('users')
         .where(
-            'id', req.user.id
+            'email', req.user.email
         ).then((user) => { return user[0] })
         delete user.password;
         res.json(user)
@@ -76,7 +76,8 @@ router.post('/', [
 
         const payload = {
             user: {
-                id: user.id
+                id: user.id,
+                email: user.email
             }
         };
 
